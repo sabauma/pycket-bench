@@ -63,8 +63,8 @@ if [ ! -x "$PROGDIR/bigloo/bin/bigloo" ]; then
     $ECHO "installing Bigloo"
     # ftp://ftp-sop.inria.fr/indes/fp/Bigloo/bigloo4.2a-alpha13Oct14.tar.gz
     _go "$PROGDIR/src"
-    BIGLOO="bigloo4.2a"
-    BIGLOO_GET="$BIGLOO-alpha13Oct14"
+    BIGLOO="bigloo4.2c"
+    BIGLOO_GET="$BIGLOO"
     $FETCH "ftp://ftp-sop.inria.fr/indes/fp/Bigloo/$BIGLOO_GET.tar.gz"
     tar -xzf "$BIGLOO_GET.tar.gz"
     cd $BIGLOO
@@ -124,10 +124,11 @@ if [ ! -x "$PROGDIR/v8/v8" ]; then
     V8V=3.25.30
     $FETCH https://github.com/v8/v8-git-mirror/archive/$V8V.tar.gz
     tar -xzf "$V8V.tar.gz"
-    cd v8-git-mirror-$V8V
-    svn checkout \
-        http://gyp.googlecode.com/svn/trunk \
-        build/gyp --revision 1831
+    cd v8-$V8V
+    git clone https://chromium.googlesource.com/external/gyp build/gyp
+    #svn checkout \
+        #http://gyp.googlecode.com/svn/trunk \
+        #build/gyp --revision 1831
     svn checkout --force --non-interactive --trust-server-cert \
         https://src.chromium.org/chrome/trunk/deps/third_party/icu52 \
         third_party/icu --revision 277999
@@ -149,27 +150,28 @@ if [ ! -x "$PROGDIR/v8/v8" ]; then
 fi
 
 if [ ! -x "$PROGDIR/spidermonkery/bin/js24" ]; then
-    if uname | grep -qi 'Darwin' && type -fp brew >/dev/null; then
-      AUTOCONF=autoconf213
-      if [ ! \( -f /usr/local/bin/autoconf213 -a \
-                -f /usr/local/include/nspr/nspr.h \) ]; then
-          $ECHO "Please brew autoconf213 and nspr"
-          exit 1
-      fi
-    else
-      AUTOCONF=autoconf2.13
-      if [ ! \( -f /usr/bin/autoconf2.13 -a \
-                -f /usr/include/nspr/nspr.h \) ]; then
-          $ECHO "Please install nspr/libsnpr4-dev and autoconf2.13"
-          exit 1
-      fi
-    fi
+    #if uname | grep -qi 'Darwin' && type -fp brew >/dev/null; then
+      #AUTOCONF=autoconf213
+      #if [ ! \( -f /usr/local/bin/autoconf213 -a \
+                #-f /usr/local/include/nspr/nspr.h \) ]; then
+          #$ECHO "Please brew autoconf213 and nspr"
+          #exit 1
+      #fi
+    #else
+      #AUTOCONF=autoconf2.13
+      #if [ ! \( -f /usr/bin/autoconf2.13 -a \
+                #-f /usr/include/nspr/nspr.h \) ]; then
+          #$ECHO "Please install nspr/libsnpr4-dev and autoconf2.13"
+          #exit 1
+      #fi
+    #fi
     _go "$PROGDIR/src"
     MJS=mozjs-24.2.0
     $FETCH https://ftp.mozilla.org/pub/mozilla.org/js/$MJS.tar.bz2
     tar -xjf $MJS.tar.bz2
     cd $MJS/js/src
-    $AUTOCONF
+    autoconf
+    #$AUTOCONF
     mkdir build-release
     cd build-release
     mkdir -p $PROGDIR/spidermonkey
